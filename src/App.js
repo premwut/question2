@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import axios from 'axios';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Table from './Table';
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = { data: [], term: '' };
+  }
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  async fetchData() {
+    const { data } = await axios.get('https://api.publicapis.org/categories');
+    this.setState({ data });
+  }
+
+  onInputChange(e) {
+    this.setState({ term: e.target.value });
+  }
+  
+  render() {
+    return (
+      <div>
+        <input type="text" value={this.state.term} onChange={(e) => this.onInputChange(e)} />
+        <hr/>
+        <Table categories={this.state.data} term={this.state.term} />
+      </div>
+    )
+  }
 }
 
 export default App;
